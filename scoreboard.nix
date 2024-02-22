@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, unzip, jre, jdk, ant, git, makeWrapper, makeDesktopItem, copyDesktopItems }:
+{ lib, stdenv, fetchFromGitHub, unzip, jre, jdk, ant, git, makeWrapper, makeDesktopItem, copyDesktopItems, ... }:
 
 let
   desktopItem = makeDesktopItem {
@@ -50,6 +50,6 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     homepage = "https://github.com/rollerderby/scoreboard";
-    description = "A graphical utility to visualize disk usage";
+    description = "Roller derby scoreboard";
   };
 }
