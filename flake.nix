@@ -28,7 +28,7 @@
             specialArgs.inputs = inputs;
             modules = [
             {
-            environment.systemPackages = [ self.packages.${system}.default pkgs.chromium ];
+            environment.systemPackages = [ self.packages.${system}.default pkgs.chromium pkgs.git ];
 
             users.groups.admin = { };
             users.groups.sbo = { };
