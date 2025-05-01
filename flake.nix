@@ -7,6 +7,7 @@
   };
   outputs =
     {
+      self,
       nixpkgs,
       flake-utils,
       ...
@@ -18,13 +19,17 @@
       in
       rec {
         formatter.${system} = pkgs.nixfmt-rfc-style;
+
         packages.default = pkgs.callPackage ./scoreboard.nix {};
+
         nixosConfigurations = {
           scoreboard = nixpkgs.lib.nixosSystem {
             inherit system;
             specialArgs.inputs = inputs;
             modules = [
             {
+            environment.systemPackages = [ self.packages.${system}.default pkgs.chromium ];
+
             users.groups.admin = { };
             users.groups.sbo = { };
             users.users = {
@@ -65,12 +70,20 @@
           };
         };
         apps = rec {
-          default = scoreboard-vm;
+          default = scoreboard;
+          scoreboard = {
+            type = "app";
+            program = "${packages.scoreboard}/bin/derby-scoreboard";
+          };
           scoreboard-vm = {
             type = "app";
             program = "${nixosConfigurations.scoreboard.config.system.build.vm}/bin/run-nixos-vm";
           };
+          scoreboard-usb = {
+            type = "app";
+            program = "${nixosConfigurations.scoreboard.config.system.build.isoImage}";
         };
+      };
       }
     );
 }

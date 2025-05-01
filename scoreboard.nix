@@ -29,6 +29,14 @@ stdenv.mkDerivation  {
     unzip release/crg-scoreboard_*.zip
     mv crg-scoreboard_*/* $out/dist
 
+    cat > $out/bin/reset-derby-scoreboard <<EOF
+    #!${bash}/bin/bash
+    CONFIG_DIR=\$(realpath ~/.config/)/derby-scoreboard
+    CACHE_DIR=\$(realpath ~/.cache/)/derby-scoreboard
+    rm -rf "\$CACHE_DIR" "\$CONFIG_DIR"
+    EOF
+    chmod +x $out/bin/reset-derby-scoreboard
+
     cat > $out/bin/derby-scoreboard <<EOF
     #!${bash}/bin/bash
     set -euo pipefail
@@ -39,6 +47,10 @@ stdenv.mkDerivation  {
     CACHE_DIR=\$(realpath ~/.cache/)/derby-scoreboard
     if [ ! -d "\$CONFIG_DIR" ]; then
         mkdir -p "\$CONFIG_DIR"
+        # Ensure that we have subdirectories in config mirroring
+        # the ones in out that we want to be able to shadow.
+        mkdir -p "\$CONFIG_DIR/config"
+        mkdir -o "\$CONFIG_DIR/html"
     fi
     if [ ! -d "\$CACHE_DIR" ]; then
         mkdir -p "\$CACHE_DIR"
